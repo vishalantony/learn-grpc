@@ -1,0 +1,26 @@
+syntax = "proto3";
+
+package tutorial;
+
+option java_package = "com.example.tutorial";
+option java_outer_classname = "OneOfExample";
+
+message MyMessage {
+  int32 id = 1;
+  oneof example_oneof {
+    string my_string = 2;
+    bool my_boolean = 3;
+  }
+}
+
+message Result {
+  string name = 1;
+  double gpa = 2;
+}
+
+message Classroom {
+  int32 classroom_id = 1;
+  map<string, Result> results = 2; // map fields cannot be repeated.
+  map<string, Result> results2 = 3; // map fields cannot be repeated.
+}
+

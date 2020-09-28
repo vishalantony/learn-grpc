@@ -1,0 +1,16 @@
+syntax = "proto3";
+
+package example.complex;
+
+option java_package = "com.example.complex";
+option java_multiple_files = true;
+
+message DummyMessage {
+  int32 id = 1;
+  string msg = 2;
+}
+
+message ComplexMessage {
+  DummyMessage main_dummy = 1;
+  repeated DummyMessage other_dummies = 2;
+}

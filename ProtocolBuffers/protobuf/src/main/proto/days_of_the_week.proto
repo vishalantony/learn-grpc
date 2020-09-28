@@ -1,0 +1,22 @@
+syntax = "proto3";
+
+package example.simple;
+
+option java_package = "com.example.simple";
+option java_multiple_files = true;
+
+enum DaysOfWeek {
+  UNKNOWN_DAY = 0;
+  MONDAY = 1;
+  TUESDAY = 2;
+  WEDNESDAY = 3;
+  THURSDAY = 4;
+  FRIDAY = 5;
+  SATURDAY = 6;
+  SUNDAY = 7;
+}
+
+message Weekday {
+  int32 id = 1;
+  DaysOfWeek day = 2;
+}

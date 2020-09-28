@@ -1,0 +1,51 @@
+// syntax for this file is proto3
+syntax = "proto3";
+
+package person;
+
+import "Date.proto";
+
+/*
+Person is used to identify
+users accross our system.
+*/
+
+message Person {
+  // age of the person
+  int32 age = 1;
+  string first_name = 2;
+  string last_name = 3;
+  /*
+  The profile picture is a
+  small jpeg file
+  */
+  bytes thumbnail = 4; // thumbnail of the profile picture
+  bool is_activated = 5;
+
+  // height of the person in centimeters
+  float height = 6;
+
+  repeated string phone_numbers = 7;
+
+  enum EyeColour {
+    UNKNOWN_EYE_COLOUR = 0;
+    EYE_GREEN = 1;
+    EYE_BROWN = 2;
+    EYE_BLUE = 3;
+  }
+
+  EyeColour eye_colour = 8;
+
+  // Person's birthday
+  my.date.Date birthday = 9;
+
+  message Address {
+    string address_line_1 = 1;
+    string address_line_2 = 2;
+    string zip_code = 3;
+    string city = 4;
+    string country = 5;
+  }
+
+  repeated Address addresses = 10;
+}

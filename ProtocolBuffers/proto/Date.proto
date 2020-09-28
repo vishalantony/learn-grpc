@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package my.date;
+
+// a message to represent dates
+message Date {
+  int32 year = 1;  // year of the date
+  int32 month = 2; // month can be 1 - 12
+  int32 day = 3;   // day can be 1 - 31
+
+  /*
+  enforcing the rules on the various fields
+  depends on the application/program.
+
+  for eg: to check if day is 1-31, you need to do that in code.
+  */
+}
