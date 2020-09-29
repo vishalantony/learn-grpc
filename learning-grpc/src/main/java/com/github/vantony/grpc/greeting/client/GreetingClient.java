@@ -1,9 +1,6 @@
 package com.github.vantony.grpc.greeting.client;
 
-import com.proto.greet.GreetRequest;
-import com.proto.greet.GreetResponse;
-import com.proto.greet.GreetServiceGrpc;
-import com.proto.greet.Greeting;
+import com.proto.greet.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 
@@ -11,6 +8,12 @@ public class GreetingClient {
     private static GreetRequest getGreetRequest(String firstName, String lastName) {
         Greeting greeting = Greeting.newBuilder().setFirstName(firstName).setSecondName(lastName).build();
         GreetRequest greetRequest = GreetRequest.newBuilder().setGreeting(greeting).build();
+        return greetRequest;
+    }
+
+    private static GreetManyTimesRequest getGreetManyTimesRequest(String firstName, String lastName) {
+        Greeting greeting = Greeting.newBuilder().setFirstName(firstName).setSecondName(lastName).build();
+        GreetManyTimesRequest greetRequest = GreetManyTimesRequest.newBuilder().setGreeting(greeting).build();
         return greetRequest;
     }
 
@@ -25,12 +28,16 @@ public class GreetingClient {
         System.out.println("Creating stub");
         GreetServiceGrpc.GreetServiceBlockingStub greetClient = GreetServiceGrpc.newBlockingStub(channel);
 
-        for(int i = 0; i < 100; i++) {
-            // sending the message
-            GreetResponse response = greetClient.greet(getGreetRequest("Vishal", "Antony"));
-            // logging the response
-            System.out.println(response.getResult());
-        }
+        // Unary API
+        // sending the message
+        GreetResponse response = greetClient.greet(getGreetRequest("Vishal", "Antony"));
+        // logging the response
+        System.out.println(response.getResult());
+
+        // Server streaming
+        greetClient.greetManyTimes(getGreetManyTimesRequest("Vishal", "Antony")).forEachRemaining(
+                greetManyTimesResponse -> System.out.println(greetManyTimesResponse.getResult())
+        );
 
         System.out.println("Shutting down channel");
         channel.shutdown();

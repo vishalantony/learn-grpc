@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package prime;
+
+option java_package = "com.proto.prime";
+option java_multiple_files = true;
+
+message PrimeCompositionRequest {
+  int32 composite = 1;
+}
+
+message PrimeCompositionResponse {
+  int32 prime_factor = 1;
+}
+
+service PrimeCompositionService {
+  rpc PrimeComposition(PrimeCompositionRequest) returns (stream PrimeCompositionResponse) {};
+}
