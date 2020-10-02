@@ -5,10 +5,16 @@ import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class GreetingClient {
+    private static Greeting getGreeting(String firstName, String lastName) {
+        return Greeting.newBuilder().setFirstName(firstName).setSecondName(lastName).build();
+    }
+
     private static GreetRequest getGreetRequest(String firstName, String lastName) {
         Greeting greeting = Greeting.newBuilder().setFirstName(firstName).setSecondName(lastName).build();
         GreetRequest greetRequest = GreetRequest.newBuilder().setGreeting(greeting).build();
@@ -103,6 +109,59 @@ public class GreetingClient {
         }
     }
 
+    private static void biDiStreamingImpl(ManagedChannel channel) {
+        GreetServiceGrpc.GreetServiceStub asyncClient = GreetServiceGrpc.newStub(channel);
+
+        CountDownLatch latch = new CountDownLatch(1);
+
+        StreamObserver<GreetEveryoneRequest> requestStreamObserver =
+                asyncClient.greetEveryone(new StreamObserver<GreetEveryoneResponse>() {
+                    @Override
+                    public void onNext(GreetEveryoneResponse value) {
+                        System.out.println("Received response: " + value.toString());
+                    }
+
+                    @Override
+                    public void onError(Throwable t) {
+
+                    }
+
+                    @Override
+                    public void onCompleted() {
+                        System.out.println("Server has completed sending the response.");
+                        latch.countDown();
+                    }
+                });
+
+
+        List<Greeting> lg = Arrays.asList(
+                getGreeting("Gandalf", "The Grey"), getGreeting("Bilbo", "Baggins"),
+                getGreeting("Samwise", "Gamgee"), getGreeting("Lady", "Galadriel"),
+                getGreeting("Aragorn", ""), getGreeting("Grima", "Wormtongue")
+        );
+
+        lg.forEach(greeting -> {
+            System.out.println("Sending " + greeting);
+            requestStreamObserver.onNext(GreetEveryoneRequest.newBuilder().setGreeting(
+                    greeting
+            ).build());
+
+            try {
+                Thread.sleep(200);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        requestStreamObserver.onCompleted();
+
+        try {
+            latch.await(15, TimeUnit.SECONDS);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello from gRPC client!");
 
@@ -110,7 +169,8 @@ public class GreetingClient {
 
 //        unaryAPIImpl(greetClient);
 //        serverStreamingImpl(greetClient);
-        clientStreamingImpl(channel);
+//        clientStreamingImpl(channel);
+        biDiStreamingImpl(channel);
 
 
         System.out.println("Shutting down channel");
