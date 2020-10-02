@@ -29,7 +29,7 @@ public class AdditionClient {
 
     }
 
-    private static void computerAverageRPCImpl(ManagedChannel channel) {
+    private static void computeAverageRPCImpl(ManagedChannel channel) {
         AdditionServiceGrpc.AdditionServiceStub asyncClient = AdditionServiceGrpc.newStub(channel);
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -54,16 +54,16 @@ public class AdditionClient {
 
         StreamObserver<ComputeAverageRequest> requestStreamObserver = asyncClient.average(responseStreamObserver);
 
-        for(int i = 0; i < 10; i++) {
+        for(int i = 0; i < 158750; i++) {
             int number = rand.nextInt(100);
-            System.out.println("number: " + number);
+//            System.out.println("number: " + number);
             requestStreamObserver.onNext(ComputeAverageRequest.newBuilder().setNumber(number).build());
         }
 
         requestStreamObserver.onCompleted();
 
         try {
-            latch.await(2, TimeUnit.SECONDS);
+            latch.await(3, TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -74,7 +74,7 @@ public class AdditionClient {
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052).usePlaintext().build();
 
 //        additionRPCImplementation(channel);
-        computerAverageRPCImpl(channel);
+        computeAverageRPCImpl(channel);
 
         // close channel
         channel.shutdown();
