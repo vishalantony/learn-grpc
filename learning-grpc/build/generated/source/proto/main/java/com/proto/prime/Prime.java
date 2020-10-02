@@ -24,6 +24,16 @@ public final class Prime {
   static final 
     com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
       internal_static_prime_PrimeCompositionResponse_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_prime_MaximumInStreamRequest_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_prime_MaximumInStreamRequest_fieldAccessorTable;
+  static final com.google.protobuf.Descriptors.Descriptor
+    internal_static_prime_MaximumInStreamResponse_descriptor;
+  static final 
+    com.google.protobuf.GeneratedMessageV3.FieldAccessorTable
+      internal_static_prime_MaximumInStreamResponse_fieldAccessorTable;
 
   public static com.google.protobuf.Descriptors.FileDescriptor
       getDescriptor() {
@@ -36,10 +46,15 @@ public final class Prime {
       "\n\027primenumber/prime.proto\022\005prime\",\n\027Prim" +
       "eCompositionRequest\022\021\n\tcomposite\030\001 \001(\005\"0" +
       "\n\030PrimeCompositionResponse\022\024\n\014prime_fact" +
-      "or\030\001 \001(\0052r\n\027PrimeCompositionService\022W\n\020P" +
-      "rimeComposition\022\036.prime.PrimeComposition" +
-      "Request\032\037.prime.PrimeCompositionResponse" +
-      "\"\0000\001B\023\n\017com.proto.primeP\001b\006proto3"
+      "or\030\001 \001(\005\"(\n\026MaximumInStreamRequest\022\016\n\006nu" +
+      "mber\030\001 \001(\005\"-\n\027MaximumInStreamResponse\022\022\n" +
+      "\nmax_number\030\001 \001(\0052\312\001\n\027PrimeCompositionSe" +
+      "rvice\022W\n\020PrimeComposition\022\036.prime.PrimeC" +
+      "ompositionRequest\032\037.prime.PrimeCompositi" +
+      "onResponse\"\0000\001\022V\n\017MaximumInStream\022\035.prim" +
+      "e.MaximumInStreamRequest\032\036.prime.Maximum" +
+      "InStreamResponse\"\000(\0010\001B\023\n\017com.proto.prim" +
+      "eP\001b\006proto3"
     };
     descriptor = com.google.protobuf.Descriptors.FileDescriptor
       .internalBuildGeneratedFileFrom(descriptorData,
@@ -57,6 +72,18 @@ public final class Prime {
       com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
         internal_static_prime_PrimeCompositionResponse_descriptor,
         new java.lang.String[] { "PrimeFactor", });
+    internal_static_prime_MaximumInStreamRequest_descriptor =
+      getDescriptor().getMessageTypes().get(2);
+    internal_static_prime_MaximumInStreamRequest_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_prime_MaximumInStreamRequest_descriptor,
+        new java.lang.String[] { "Number", });
+    internal_static_prime_MaximumInStreamResponse_descriptor =
+      getDescriptor().getMessageTypes().get(3);
+    internal_static_prime_MaximumInStreamResponse_fieldAccessorTable = new
+      com.google.protobuf.GeneratedMessageV3.FieldAccessorTable(
+        internal_static_prime_MaximumInStreamResponse_descriptor,
+        new java.lang.String[] { "MaxNumber", });
   }
 
   // @@protoc_insertion_point(outer_class_scope)

@@ -58,6 +58,37 @@ public final class PrimeCompositionServiceGrpc {
     return getPrimeCompositionMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.proto.prime.MaximumInStreamRequest,
+      com.proto.prime.MaximumInStreamResponse> getMaximumInStreamMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "MaximumInStream",
+      requestType = com.proto.prime.MaximumInStreamRequest.class,
+      responseType = com.proto.prime.MaximumInStreamResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+  public static io.grpc.MethodDescriptor<com.proto.prime.MaximumInStreamRequest,
+      com.proto.prime.MaximumInStreamResponse> getMaximumInStreamMethod() {
+    io.grpc.MethodDescriptor<com.proto.prime.MaximumInStreamRequest, com.proto.prime.MaximumInStreamResponse> getMaximumInStreamMethod;
+    if ((getMaximumInStreamMethod = PrimeCompositionServiceGrpc.getMaximumInStreamMethod) == null) {
+      synchronized (PrimeCompositionServiceGrpc.class) {
+        if ((getMaximumInStreamMethod = PrimeCompositionServiceGrpc.getMaximumInStreamMethod) == null) {
+          PrimeCompositionServiceGrpc.getMaximumInStreamMethod = getMaximumInStreamMethod =
+              io.grpc.MethodDescriptor.<com.proto.prime.MaximumInStreamRequest, com.proto.prime.MaximumInStreamResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.BIDI_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "MaximumInStream"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.prime.MaximumInStreamRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.prime.MaximumInStreamResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new PrimeCompositionServiceMethodDescriptorSupplier("MaximumInStream"))
+              .build();
+        }
+      }
+    }
+    return getMaximumInStreamMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -113,6 +144,13 @@ public final class PrimeCompositionServiceGrpc {
       asyncUnimplementedUnaryCall(getPrimeCompositionMethod(), responseObserver);
     }
 
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.proto.prime.MaximumInStreamRequest> maximumInStream(
+        io.grpc.stub.StreamObserver<com.proto.prime.MaximumInStreamResponse> responseObserver) {
+      return asyncUnimplementedStreamingCall(getMaximumInStreamMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -122,6 +160,13 @@ public final class PrimeCompositionServiceGrpc {
                 com.proto.prime.PrimeCompositionRequest,
                 com.proto.prime.PrimeCompositionResponse>(
                   this, METHODID_PRIME_COMPOSITION)))
+          .addMethod(
+            getMaximumInStreamMethod(),
+            asyncBidiStreamingCall(
+              new MethodHandlers<
+                com.proto.prime.MaximumInStreamRequest,
+                com.proto.prime.MaximumInStreamResponse>(
+                  this, METHODID_MAXIMUM_IN_STREAM)))
           .build();
     }
   }
@@ -146,6 +191,14 @@ public final class PrimeCompositionServiceGrpc {
         io.grpc.stub.StreamObserver<com.proto.prime.PrimeCompositionResponse> responseObserver) {
       asyncServerStreamingCall(
           getChannel().newCall(getPrimeCompositionMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.proto.prime.MaximumInStreamRequest> maximumInStream(
+        io.grpc.stub.StreamObserver<com.proto.prime.MaximumInStreamResponse> responseObserver) {
+      return asyncBidiStreamingCall(
+          getChannel().newCall(getMaximumInStreamMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -188,6 +241,7 @@ public final class PrimeCompositionServiceGrpc {
   }
 
   private static final int METHODID_PRIME_COMPOSITION = 0;
+  private static final int METHODID_MAXIMUM_IN_STREAM = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -220,6 +274,9 @@ public final class PrimeCompositionServiceGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_MAXIMUM_IN_STREAM:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.maximumInStream(
+              (io.grpc.stub.StreamObserver<com.proto.prime.MaximumInStreamResponse>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -272,6 +329,7 @@ public final class PrimeCompositionServiceGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new PrimeCompositionServiceFileDescriptorSupplier())
               .addMethod(getPrimeCompositionMethod())
+              .addMethod(getMaximumInStreamMethod())
               .build();
         }
       }

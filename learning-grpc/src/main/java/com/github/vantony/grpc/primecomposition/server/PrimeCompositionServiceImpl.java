@@ -1,8 +1,6 @@
 package com.github.vantony.grpc.primecomposition.server;
 
-import com.proto.prime.PrimeCompositionRequest;
-import com.proto.prime.PrimeCompositionResponse;
-import com.proto.prime.PrimeCompositionServiceGrpc;
+import com.proto.prime.*;
 import io.grpc.stub.StreamObserver;
 
 public class PrimeCompositionServiceImpl extends PrimeCompositionServiceGrpc.PrimeCompositionServiceImplBase {
@@ -33,5 +31,35 @@ public class PrimeCompositionServiceImpl extends PrimeCompositionServiceGrpc.Pri
         }
 
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public StreamObserver<MaximumInStreamRequest> maximumInStream(StreamObserver<MaximumInStreamResponse> responseObserver) {
+
+        return new StreamObserver<MaximumInStreamRequest>() {
+            int maxYet = Integer.MIN_VALUE;
+
+            @Override
+            public void onNext(MaximumInStreamRequest value) {
+                int max = Math.max(maxYet, value.getNumber());
+                if (max > maxYet) {
+                    maxYet = max;
+                    MaximumInStreamResponse response = MaximumInStreamResponse.newBuilder().setMaxNumber(maxYet).build();
+                    responseObserver.onNext(response);
+                }
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.println("Error in finding max. Server side.");
+                responseObserver.onCompleted();
+            }
+
+            @Override
+            public void onCompleted() {
+                System.out.println("Client has sent all requests. Server closing.");
+                responseObserver.onCompleted();
+            }
+        };
     }
 }

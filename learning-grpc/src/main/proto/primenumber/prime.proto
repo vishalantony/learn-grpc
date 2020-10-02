@@ -13,6 +13,16 @@ message PrimeCompositionResponse {
   int32 prime_factor = 1;
 }
 
+message MaximumInStreamRequest {
+  int32 number = 1;
+}
+
+message MaximumInStreamResponse {
+  int32 max_number = 1;
+}
+
 service PrimeCompositionService {
   rpc PrimeComposition(PrimeCompositionRequest) returns (stream PrimeCompositionResponse) {};
+
+  rpc MaximumInStream(stream MaximumInStreamRequest) returns (stream MaximumInStreamResponse) {};
 }
