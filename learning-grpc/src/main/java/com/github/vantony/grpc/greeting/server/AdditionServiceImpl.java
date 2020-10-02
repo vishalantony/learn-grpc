@@ -1,8 +1,6 @@
 package com.github.vantony.grpc.greeting.server;
 
-import com.proto.sum.AdditionServiceGrpc;
-import com.proto.sum.SumRequest;
-import com.proto.sum.SumResponse;
+import com.proto.sum.*;
 import io.grpc.stub.StreamObserver;
 
 public class AdditionServiceImpl extends AdditionServiceGrpc.AdditionServiceImplBase {
@@ -21,5 +19,43 @@ public class AdditionServiceImpl extends AdditionServiceGrpc.AdditionServiceImpl
 
         // complete sending the response
         responseObserver.onCompleted();
+    }
+
+    @Override
+    public StreamObserver<ComputeAverageRequest> average(StreamObserver<ComputeAverageResponse> responseObserver) {
+        StreamObserver<ComputeAverageRequest> requestStreamObserver = new StreamObserver<ComputeAverageRequest>() {
+            int sum = 0;
+            int count = 0;
+
+            @Override
+            public void onNext(ComputeAverageRequest value) {
+                System.out.println("Got another number in the stream [" + value.getNumber() + "]");
+                sum += value.getNumber();
+                count++;
+            }
+
+            @Override
+            public void onError(Throwable t) {
+                System.out.println("error in requestObserver: " + t.getMessage());
+            }
+
+            @Override
+            public void onCompleted() {
+                double average;
+                if (count == 0) {
+                    average = 0;
+                } else {
+                    average = sum * 1.0 / count;
+                }
+
+                ComputeAverageResponse response = ComputeAverageResponse.newBuilder().setAverage(average).build();
+                System.out.println("Sending the average: " + response.getAverage());
+
+                responseObserver.onNext(response);
+                responseObserver.onCompleted();
+            }
+        };
+
+        return requestStreamObserver;
     }
 }

@@ -58,6 +58,37 @@ public final class AdditionServiceGrpc {
     return getAddMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.proto.sum.ComputeAverageRequest,
+      com.proto.sum.ComputeAverageResponse> getAverageMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "Average",
+      requestType = com.proto.sum.ComputeAverageRequest.class,
+      responseType = com.proto.sum.ComputeAverageResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+  public static io.grpc.MethodDescriptor<com.proto.sum.ComputeAverageRequest,
+      com.proto.sum.ComputeAverageResponse> getAverageMethod() {
+    io.grpc.MethodDescriptor<com.proto.sum.ComputeAverageRequest, com.proto.sum.ComputeAverageResponse> getAverageMethod;
+    if ((getAverageMethod = AdditionServiceGrpc.getAverageMethod) == null) {
+      synchronized (AdditionServiceGrpc.class) {
+        if ((getAverageMethod = AdditionServiceGrpc.getAverageMethod) == null) {
+          AdditionServiceGrpc.getAverageMethod = getAverageMethod =
+              io.grpc.MethodDescriptor.<com.proto.sum.ComputeAverageRequest, com.proto.sum.ComputeAverageResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.CLIENT_STREAMING)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "Average"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.sum.ComputeAverageRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.sum.ComputeAverageResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AdditionServiceMethodDescriptorSupplier("Average"))
+              .build();
+        }
+      }
+    }
+    return getAverageMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -113,6 +144,13 @@ public final class AdditionServiceGrpc {
       asyncUnimplementedUnaryCall(getAddMethod(), responseObserver);
     }
 
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.proto.sum.ComputeAverageRequest> average(
+        io.grpc.stub.StreamObserver<com.proto.sum.ComputeAverageResponse> responseObserver) {
+      return asyncUnimplementedStreamingCall(getAverageMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -122,6 +160,13 @@ public final class AdditionServiceGrpc {
                 com.proto.sum.SumRequest,
                 com.proto.sum.SumResponse>(
                   this, METHODID_ADD)))
+          .addMethod(
+            getAverageMethod(),
+            asyncClientStreamingCall(
+              new MethodHandlers<
+                com.proto.sum.ComputeAverageRequest,
+                com.proto.sum.ComputeAverageResponse>(
+                  this, METHODID_AVERAGE)))
           .build();
     }
   }
@@ -146,6 +191,14 @@ public final class AdditionServiceGrpc {
         io.grpc.stub.StreamObserver<com.proto.sum.SumResponse> responseObserver) {
       asyncUnaryCall(
           getChannel().newCall(getAddMethod(), getCallOptions()), request, responseObserver);
+    }
+
+    /**
+     */
+    public io.grpc.stub.StreamObserver<com.proto.sum.ComputeAverageRequest> average(
+        io.grpc.stub.StreamObserver<com.proto.sum.ComputeAverageResponse> responseObserver) {
+      return asyncClientStreamingCall(
+          getChannel().newCall(getAverageMethod(), getCallOptions()), responseObserver);
     }
   }
 
@@ -195,6 +248,7 @@ public final class AdditionServiceGrpc {
   }
 
   private static final int METHODID_ADD = 0;
+  private static final int METHODID_AVERAGE = 1;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -227,6 +281,9 @@ public final class AdditionServiceGrpc {
     public io.grpc.stub.StreamObserver<Req> invoke(
         io.grpc.stub.StreamObserver<Resp> responseObserver) {
       switch (methodId) {
+        case METHODID_AVERAGE:
+          return (io.grpc.stub.StreamObserver<Req>) serviceImpl.average(
+              (io.grpc.stub.StreamObserver<com.proto.sum.ComputeAverageResponse>) responseObserver);
         default:
           throw new AssertionError();
       }
@@ -279,6 +336,7 @@ public final class AdditionServiceGrpc {
           serviceDescriptor = result = io.grpc.ServiceDescriptor.newBuilder(SERVICE_NAME)
               .setSchemaDescriptor(new AdditionServiceFileDescriptorSupplier())
               .addMethod(getAddMethod())
+              .addMethod(getAverageMethod())
               .build();
         }
       }
