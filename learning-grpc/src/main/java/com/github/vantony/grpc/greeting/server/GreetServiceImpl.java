@@ -1,6 +1,7 @@
 package com.github.vantony.grpc.greeting.server;
 
 import com.proto.greet.*;
+import io.grpc.Context;
 import io.grpc.stub.StreamObserver;
 
 public class GreetServiceImpl extends GreetServiceGrpc.GreetServiceImplBase {
@@ -126,5 +127,40 @@ public class GreetServiceImpl extends GreetServiceGrpc.GreetServiceImplBase {
         };
 
         return requestStreamObserver;
+    }
+
+    @Override
+    public void greetWithDeadline(GreetWithDeadlineRequest request, StreamObserver<GreetWithDeadlineResponse> responseObserver) {
+        try {
+            // get rpc context
+            Context currentContext = Context.current();
+
+            // extract information
+            String firstName = request.getGreeting().getFirstName();
+            String lastName = request.getGreeting().getSecondName();
+
+            for (int i = 0; i < 3; i++) {
+                if (currentContext.isCancelled()) {
+                    System.out.println("Context is cancelled.");
+                    return;
+                }
+                System.out.println("Going to sleep...");
+                Thread.sleep(100);
+            }
+
+            // send response
+            System.out.println("Sending response...");
+            responseObserver.onNext(
+                    GreetWithDeadlineResponse
+                            .newBuilder()
+                            .setResult(String.format("Hello %s %s!", firstName, lastName))
+                            .build()
+            );
+
+            // complete request
+            responseObserver.onCompleted();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -1,8 +1,7 @@
 package com.github.vantony.grpc.greeting.client;
 
 import com.proto.greet.*;
-import io.grpc.ManagedChannel;
-import io.grpc.ManagedChannelBuilder;
+import io.grpc.*;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Arrays;
@@ -162,6 +161,48 @@ public class GreetingClient {
         }
     }
 
+    private static void unaryCallWithDeadline(ManagedChannel channel) {
+        GreetServiceGrpc.GreetServiceBlockingStub client = GreetServiceGrpc.newBlockingStub(channel);
+
+        //first call with 500 ms deadline
+        try {
+            System.out.println("Sending request with deadline of 500 ms.");
+            GreetWithDeadlineResponse response =
+                    client.withDeadline(Deadline.after(1000, TimeUnit.MILLISECONDS))
+                            .greetWithDeadline(
+                                    GreetWithDeadlineRequest
+                                            .newBuilder()
+                                            .setGreeting(getGreeting("Vishal", "Antony"))
+                                            .build()
+                            );
+            System.out.println("Response :: " + response.getResult());
+        } catch (StatusRuntimeException e) {
+            if (e.getStatus() == Status.DEADLINE_EXCEEDED) {
+                System.out.println("Deadline has been exceeded. We don't want the response");
+            }
+            e.printStackTrace();
+        }
+
+        //first call with 100 ms deadline
+        try {
+            System.out.println("Sending request with deadline of 100 ms.");
+            GreetWithDeadlineResponse response =
+                    client.withDeadline(Deadline.after(100, TimeUnit.MILLISECONDS))
+                            .greetWithDeadline(
+                                    GreetWithDeadlineRequest
+                                            .newBuilder()
+                                            .setGreeting(getGreeting("Vishal", "Antony"))
+                                            .build()
+                            );
+            System.out.println("Response :: " + response.getResult());
+        } catch (StatusRuntimeException e) {
+            if (e.getStatus() == Status.DEADLINE_EXCEEDED) {
+                System.out.println("Deadline has been exceeded. We don't want the response");
+            }
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
         System.out.println("Hello from gRPC client!");
 
@@ -170,7 +211,9 @@ public class GreetingClient {
 //        unaryAPIImpl(greetClient);
 //        serverStreamingImpl(greetClient);
 //        clientStreamingImpl(channel);
-        biDiStreamingImpl(channel);
+//        biDiStreamingImpl(channel);
+
+        unaryCallWithDeadline(channel);
 
 
         System.out.println("Shutting down channel");
