@@ -2,8 +2,12 @@ package com.github.vantony.grpc.greeting.client;
 
 import com.proto.greet.*;
 import io.grpc.*;
+import io.grpc.netty.shaded.io.grpc.netty.GrpcSslContexts;
+import io.grpc.netty.shaded.io.grpc.netty.NettyChannelBuilder;
 import io.grpc.stub.StreamObserver;
 
+import javax.net.ssl.SSLException;
+import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CountDownLatch;
@@ -27,9 +31,23 @@ public class GreetingClient {
     }
 
     private static ManagedChannel getChannel(String url, int port) {
-        return ManagedChannelBuilder
+        try {
+            return getSecureChannel(url, port);
+        } catch (SSLException e) {
+            e.printStackTrace();
+        }
+
+        ManagedChannel nonSecureChannel = ManagedChannelBuilder
                 .forAddress(url, port)
                 .usePlaintext()
+                .build();
+        return nonSecureChannel;
+    }
+
+    private static ManagedChannel getSecureChannel(String url, int port) throws SSLException {
+        return NettyChannelBuilder
+                .forAddress(url, port)
+                .sslContext(GrpcSslContexts.forClient().trustManager(new File("ssl/ca.crt")).build())
                 .build();
     }
 
@@ -38,15 +56,24 @@ public class GreetingClient {
         return GreetServiceGrpc.newBlockingStub(channel);
     }
 
-    private static void unaryAPIImpl(GreetServiceGrpc.GreetServiceBlockingStub greetClient) {
+    private static void unaryAPIImpl(ManagedChannel channel) {
         // Unary API
+
+        // create the blocking stub
+        GreetServiceGrpc.GreetServiceBlockingStub greetClient = GreetServiceGrpc.newBlockingStub(channel);
+
         // sending the message
         GreetResponse response = greetClient.greet(getGreetRequest("Vishal", "Antony"));
+
         // logging the response
         System.out.println(response.getResult());
     }
 
-    private static void serverStreamingImpl(GreetServiceGrpc.GreetServiceBlockingStub greetClient) {
+    private static void serverStreamingImpl(ManagedChannel channel) {
+        // create stub
+        GreetServiceGrpc.GreetServiceBlockingStub greetClient =
+                GreetServiceGrpc.newBlockingStub(channel);
+
         // Server streaming
         greetClient.greetManyTimes(getGreetManyTimesRequest("Vishal", "Antony")).forEachRemaining(
                 greetManyTimesResponse -> System.out.println(greetManyTimesResponse.getResult())
@@ -208,12 +235,12 @@ public class GreetingClient {
 
         ManagedChannel channel = getChannel("localhost", 50051);
 
-//        unaryAPIImpl(greetClient);
-//        serverStreamingImpl(greetClient);
+        unaryAPIImpl(channel);
+//        serverStreamingImpl(channel);
 //        clientStreamingImpl(channel);
 //        biDiStreamingImpl(channel);
-
-        unaryCallWithDeadline(channel);
+//
+//        unaryCallWithDeadline(channel);
 
 
         System.out.println("Shutting down channel");
