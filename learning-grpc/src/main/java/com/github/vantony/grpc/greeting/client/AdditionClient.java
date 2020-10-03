@@ -3,6 +3,7 @@ package com.github.vantony.grpc.greeting.client;
 import com.proto.sum.*;
 import io.grpc.ManagedChannel;
 import io.grpc.ManagedChannelBuilder;
+import io.grpc.StatusRuntimeException;
 import io.grpc.stub.StreamObserver;
 
 import java.util.Random;
@@ -10,13 +11,13 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 public class AdditionClient {
-    static Random rand = new Random(System.currentTimeMillis());
+    Random rand = new Random(System.currentTimeMillis());
 
-    private static SumRequest getSumRequest(int a, int b) {
+    private SumRequest getSumRequest(int a, int b) {
         return SumRequest.newBuilder().setNumber1(a).setNumber2(b).build();
     }
 
-    private static void additionRPCImplementation(ManagedChannel channel) {
+    private void additionRPCImplementation(ManagedChannel channel) {
         // create stub
         AdditionServiceGrpc.AdditionServiceBlockingStub additionStub = AdditionServiceGrpc.newBlockingStub(channel);
 
@@ -29,7 +30,7 @@ public class AdditionClient {
 
     }
 
-    private static void computeAverageRPCImpl(ManagedChannel channel) {
+    private void computeAverageRPCImpl(ManagedChannel channel) {
         AdditionServiceGrpc.AdditionServiceStub asyncClient = AdditionServiceGrpc.newStub(channel);
 
         CountDownLatch latch = new CountDownLatch(1);
@@ -69,12 +70,29 @@ public class AdditionClient {
         }
     }
 
+    private void doErrorCall(ManagedChannel channel) {
+        // create stub
+        AdditionServiceGrpc.AdditionServiceBlockingStub client = AdditionServiceGrpc.newBlockingStub(channel);
+
+        try {
+            client.squareRoot(SquareRootRequest.newBuilder().setNumber(-1).build());
+        } catch (StatusRuntimeException e) {
+            System.out.println("Call to get square root failed. Exception : " + e.getMessage());
+            e.getStatus();
+            e.printStackTrace();
+        }
+    }
+
     public static void main(String[] args) {
+        AdditionClient clientSide = new AdditionClient();
+
         //create channel
         ManagedChannel channel = ManagedChannelBuilder.forAddress("localhost", 50052).usePlaintext().build();
 
-//        additionRPCImplementation(channel);
-        computeAverageRPCImpl(channel);
+//        clientSide.additionRPCImplementation(channel);
+//        clientSide.computeAverageRPCImpl(channel);
+
+        clientSide.doErrorCall(channel);
 
         // close channel
         channel.shutdown();

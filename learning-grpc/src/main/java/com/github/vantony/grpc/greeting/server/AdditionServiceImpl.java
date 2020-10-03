@@ -1,6 +1,7 @@
 package com.github.vantony.grpc.greeting.server;
 
 import com.proto.sum.*;
+import io.grpc.Status;
 import io.grpc.stub.StreamObserver;
 
 public class AdditionServiceImpl extends AdditionServiceGrpc.AdditionServiceImplBase {
@@ -57,5 +58,28 @@ public class AdditionServiceImpl extends AdditionServiceGrpc.AdditionServiceImpl
         };
 
         return requestStreamObserver;
+    }
+
+    @Override
+    public void squareRoot(SquareRootRequest request, StreamObserver<SquareRootResponse> responseObserver) {
+        int number = request.getNumber();
+
+        if (number >= 0) {
+            responseObserver.onNext(
+                    SquareRootResponse
+                            .newBuilder()
+                            .setSquareRoot(Math.sqrt(number))
+                            .build()
+            );
+
+            responseObserver.onCompleted();
+        } else {
+            responseObserver.onError(
+                    Status.INVALID_ARGUMENT
+                            .withDescription("The number sent is not positive!")
+                            .augmentDescription("Number sent : " + number)
+                            .asRuntimeException()
+            );
+        }
     }
 }

@@ -89,6 +89,37 @@ public final class AdditionServiceGrpc {
     return getAverageMethod;
   }
 
+  private static volatile io.grpc.MethodDescriptor<com.proto.sum.SquareRootRequest,
+      com.proto.sum.SquareRootResponse> getSquareRootMethod;
+
+  @io.grpc.stub.annotations.RpcMethod(
+      fullMethodName = SERVICE_NAME + '/' + "SquareRoot",
+      requestType = com.proto.sum.SquareRootRequest.class,
+      responseType = com.proto.sum.SquareRootResponse.class,
+      methodType = io.grpc.MethodDescriptor.MethodType.UNARY)
+  public static io.grpc.MethodDescriptor<com.proto.sum.SquareRootRequest,
+      com.proto.sum.SquareRootResponse> getSquareRootMethod() {
+    io.grpc.MethodDescriptor<com.proto.sum.SquareRootRequest, com.proto.sum.SquareRootResponse> getSquareRootMethod;
+    if ((getSquareRootMethod = AdditionServiceGrpc.getSquareRootMethod) == null) {
+      synchronized (AdditionServiceGrpc.class) {
+        if ((getSquareRootMethod = AdditionServiceGrpc.getSquareRootMethod) == null) {
+          AdditionServiceGrpc.getSquareRootMethod = getSquareRootMethod =
+              io.grpc.MethodDescriptor.<com.proto.sum.SquareRootRequest, com.proto.sum.SquareRootResponse>newBuilder()
+              .setType(io.grpc.MethodDescriptor.MethodType.UNARY)
+              .setFullMethodName(generateFullMethodName(SERVICE_NAME, "SquareRoot"))
+              .setSampledToLocalTracing(true)
+              .setRequestMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.sum.SquareRootRequest.getDefaultInstance()))
+              .setResponseMarshaller(io.grpc.protobuf.ProtoUtils.marshaller(
+                  com.proto.sum.SquareRootResponse.getDefaultInstance()))
+              .setSchemaDescriptor(new AdditionServiceMethodDescriptorSupplier("SquareRoot"))
+              .build();
+        }
+      }
+    }
+    return getSquareRootMethod;
+  }
+
   /**
    * Creates a new async stub that supports all call types for the service
    */
@@ -151,6 +182,17 @@ public final class AdditionServiceGrpc {
       return asyncUnimplementedStreamingCall(getAverageMethod(), responseObserver);
     }
 
+    /**
+     * <pre>
+     * RPC to get the square root of a number.
+     * returns error if the number is negative.
+     * </pre>
+     */
+    public void squareRoot(com.proto.sum.SquareRootRequest request,
+        io.grpc.stub.StreamObserver<com.proto.sum.SquareRootResponse> responseObserver) {
+      asyncUnimplementedUnaryCall(getSquareRootMethod(), responseObserver);
+    }
+
     @java.lang.Override public final io.grpc.ServerServiceDefinition bindService() {
       return io.grpc.ServerServiceDefinition.builder(getServiceDescriptor())
           .addMethod(
@@ -167,6 +209,13 @@ public final class AdditionServiceGrpc {
                 com.proto.sum.ComputeAverageRequest,
                 com.proto.sum.ComputeAverageResponse>(
                   this, METHODID_AVERAGE)))
+          .addMethod(
+            getSquareRootMethod(),
+            asyncUnaryCall(
+              new MethodHandlers<
+                com.proto.sum.SquareRootRequest,
+                com.proto.sum.SquareRootResponse>(
+                  this, METHODID_SQUARE_ROOT)))
           .build();
     }
   }
@@ -200,6 +249,18 @@ public final class AdditionServiceGrpc {
       return asyncClientStreamingCall(
           getChannel().newCall(getAverageMethod(), getCallOptions()), responseObserver);
     }
+
+    /**
+     * <pre>
+     * RPC to get the square root of a number.
+     * returns error if the number is negative.
+     * </pre>
+     */
+    public void squareRoot(com.proto.sum.SquareRootRequest request,
+        io.grpc.stub.StreamObserver<com.proto.sum.SquareRootResponse> responseObserver) {
+      asyncUnaryCall(
+          getChannel().newCall(getSquareRootMethod(), getCallOptions()), request, responseObserver);
+    }
   }
 
   /**
@@ -221,6 +282,17 @@ public final class AdditionServiceGrpc {
     public com.proto.sum.SumResponse add(com.proto.sum.SumRequest request) {
       return blockingUnaryCall(
           getChannel(), getAddMethod(), getCallOptions(), request);
+    }
+
+    /**
+     * <pre>
+     * RPC to get the square root of a number.
+     * returns error if the number is negative.
+     * </pre>
+     */
+    public com.proto.sum.SquareRootResponse squareRoot(com.proto.sum.SquareRootRequest request) {
+      return blockingUnaryCall(
+          getChannel(), getSquareRootMethod(), getCallOptions(), request);
     }
   }
 
@@ -245,10 +317,23 @@ public final class AdditionServiceGrpc {
       return futureUnaryCall(
           getChannel().newCall(getAddMethod(), getCallOptions()), request);
     }
+
+    /**
+     * <pre>
+     * RPC to get the square root of a number.
+     * returns error if the number is negative.
+     * </pre>
+     */
+    public com.google.common.util.concurrent.ListenableFuture<com.proto.sum.SquareRootResponse> squareRoot(
+        com.proto.sum.SquareRootRequest request) {
+      return futureUnaryCall(
+          getChannel().newCall(getSquareRootMethod(), getCallOptions()), request);
+    }
   }
 
   private static final int METHODID_ADD = 0;
-  private static final int METHODID_AVERAGE = 1;
+  private static final int METHODID_SQUARE_ROOT = 1;
+  private static final int METHODID_AVERAGE = 2;
 
   private static final class MethodHandlers<Req, Resp> implements
       io.grpc.stub.ServerCalls.UnaryMethod<Req, Resp>,
@@ -270,6 +355,10 @@ public final class AdditionServiceGrpc {
         case METHODID_ADD:
           serviceImpl.add((com.proto.sum.SumRequest) request,
               (io.grpc.stub.StreamObserver<com.proto.sum.SumResponse>) responseObserver);
+          break;
+        case METHODID_SQUARE_ROOT:
+          serviceImpl.squareRoot((com.proto.sum.SquareRootRequest) request,
+              (io.grpc.stub.StreamObserver<com.proto.sum.SquareRootResponse>) responseObserver);
           break;
         default:
           throw new AssertionError();
@@ -337,6 +426,7 @@ public final class AdditionServiceGrpc {
               .setSchemaDescriptor(new AdditionServiceFileDescriptorSupplier())
               .addMethod(getAddMethod())
               .addMethod(getAverageMethod())
+              .addMethod(getSquareRootMethod())
               .build();
         }
       }
