@@ -32,6 +32,7 @@ dependencies {
     implementation 'io.grpc:grpc-netty-shaded:1.32.1' // includes ssl libraries
     implementation 'io.grpc:grpc-protobuf:1.32.1'
     implementation 'io.grpc:grpc-stub:1.32.1'
+    implementation "io.grpc:grpc-services:1.32.1" // server reflection
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
